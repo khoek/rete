@@ -357,6 +357,33 @@ impl FirestoreAuthStore {
         .await
     }
 
+    /// Verify a pending browser identity proof without granting access or consuming its code.
+    /// This requires the store's database credentials and the original PKCE verifier.
+    pub async fn verify_identity_proof(
+        &self,
+        request: OAuthAuthorizationCodeGrantRequest<'_>,
+    ) -> anyhow::Result<Option<OAuthVerifiedIdentity>> {
+        let Some(parsed) = self.authorization_code_tokens.parse(request.code)? else {
+            return Ok(None);
+        };
+        let challenge = pkce_s256_code_challenge(request.code_verifier);
+        let exchange = OAuthAuthorizationCodeExchangeRequest {
+            code_id: parsed.id(),
+            expected_token_verifier: parsed.verifier(),
+            expected_client_id: request.client_id,
+            expected_redirect_uri: request.redirect_uri,
+            expected_pkce_challenge: &challenge,
+            now_unix: request.now_unix,
+        };
+        Ok(self
+            .validate_authorization_code(exchange)
+            .await?
+            .map(|record| OAuthVerifiedIdentity {
+                provider_sub: record.provider_sub,
+                principal: record.principal,
+            }))
+    }
+
     async fn consume_authorization_code(
         &self,
         exchange: OAuthAuthorizationCodeExchangeRequest<'_>,

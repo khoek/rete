@@ -33,6 +33,20 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "330a5ed07fa54e4702c9d6c4174f74427fc0ef6e214bbd677ae50a5099946470"
 
 [[package]]
+name = "arche-firestore"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "async-trait",
+ "firestore",
+ "gcloud-sdk",
+ "secret-vault-value",
+ "serde",
+ "tokio",
+ "tracing",
+]
+
+[[package]]
 name = "arche-web"
 version = "0.1.0"
 dependencies = [
@@ -802,20 +816,6 @@ dependencies = [
  "struct-path",
  "tokio",
  "tokio-stream",
- "tracing",
-]
-
-[[package]]
-name = "arche-firestore"
-version = "0.1.0"
-dependencies = [
- "anyhow",
- "async-trait",
- "firestore",
- "gcloud-sdk",
- "secret-vault-value",
- "serde",
- "tokio",
  "tracing",
 ]
 
@@ -1963,11 +1963,11 @@ name = "phylax-gcp"
 version = "0.1.0"
 dependencies = [
  "anyhow",
+ "arche-firestore",
  "async-trait",
  "base64 0.23.1",
  "ed25519-dalek 3.0.0",
  "firestore",
- "arche-firestore",
  "getrandom 0.4.3",
  "phylax-core",
  "reqwest 0.13.4",
