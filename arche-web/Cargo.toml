@@ -2,13 +2,15 @@
 name = "arche-web"
 version = "0.1.0"
 edition.workspace = true
+authors.workspace = true
 license.workspace = true
 publish.workspace = true
 repository.workspace = true
 readme = "README.md"
+include = ["src/**", "Cargo.toml", "README.md", "LICENSE"]
 categories = ["web-programming::http-server", "asynchronous"]
 keywords = ["axum", "http", "proxy", "tokio"]
-description = "Reusable HTTP service runtime, bounded forwarding, and JSON errors."
+description = "HTTP serving, forwarding, and errors for Axum services."
 
 [dependencies]
 anyhow = "1"

@@ -806,7 +806,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "firestore-common"
+name = "arche-firestore"
 version = "0.1.0"
 dependencies = [
  "anyhow",
@@ -1967,7 +1967,7 @@ dependencies = [
  "base64 0.23.1",
  "ed25519-dalek 3.0.0",
  "firestore",
- "firestore-common",
+ "arche-firestore",
  "getrandom 0.4.3",
  "phylax-core",
  "reqwest 0.13.4",

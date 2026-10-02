@@ -2,13 +2,15 @@
 name = "phylax-oidc"
 version = "0.1.0"
 edition.workspace = true
+authors.workspace = true
 license.workspace = true
 publish.workspace = true
 repository.workspace = true
 readme = "README.md"
+include = ["src/**", "Cargo.toml", "README.md", "LICENSE"]
 categories = ["authentication", "web-programming"]
 keywords = ["openid-connect", "oidc", "oauth2", "authentication"]
-description = "Configurable OIDC provider adapter for Phylax authorization code flows."
+description = "OpenID Connect provider integration for Phylax."
 
 [dependencies]
 phylax-core = { workspace = true }

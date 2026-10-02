@@ -2,13 +2,15 @@
 name = "phylax-core"
 version = "0.1.1"
 edition.workspace = true
+authors.workspace = true
 license.workspace = true
 publish.workspace = true
 repository.workspace = true
 readme = "README.md"
+include = ["src/**", "Cargo.toml", "README.md", "LICENSE"]
 categories = ["authentication", "web-programming"]
 keywords = ["oauth2", "jwt", "authentication", "axum"]
-description = "Reusable OAuth access-token, refresh-token, and Axum auth endpoint primitives."
+description = "OAuth, JWT, PKCE, and refresh-token primitives."
 
 [dependencies]
 anyhow = { workspace = true }

@@ -2,20 +2,21 @@
 resolver = "3"
 members = [
     "arche-web",
-    "firestore-common",
+    "arche-firestore",
     "phylax-core",
     "phylax-gcp",
     "phylax-oidc",
 ]
 
 [workspace.package]
+authors = ["Keeley Hoek <keeley@hoek.io>"]
 edition = "2024"
 license = "AGPL-3.0-only"
 repository = "https://github.com/khoek/rete"
 publish = ["crates-io"]
 
 [workspace.dependencies]
-firestore-common = { path = "firestore-common", version = "0.1" }
+arche-firestore = { path = "arche-firestore", version = "0.1" }
 phylax-core = { path = "phylax-core", version = "0.1" }
 
 anyhow = "1"

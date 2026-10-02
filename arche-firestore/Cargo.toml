@@ -1,14 +1,16 @@
 [package]
-name = "firestore-common"
+name = "arche-firestore"
 version = "0.1.0"
 edition.workspace = true
+authors.workspace = true
 license.workspace = true
 publish.workspace = true
 repository.workspace = true
 readme = "README.md"
+include = ["src/**", "Cargo.toml", "README.md", "LICENSE"]
 categories = ["database"]
 keywords = ["firestore", "gcp", "database"]
-description = "Validated Firestore connections and strict typed document access."
+description = "Firestore connections and typed document helpers."
 
 [dependencies]
 anyhow = { workspace = true }

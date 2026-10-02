@@ -2,16 +2,18 @@
 name = "phylax-gcp"
 version = "0.1.0"
 edition.workspace = true
+authors.workspace = true
 license.workspace = true
 publish.workspace = true
 repository.workspace = true
 readme = "README.md"
+include = ["src/**", "Cargo.toml", "README.md", "LICENSE", "infra/**"]
 categories = ["authentication", "database"]
 keywords = ["oauth2", "firestore", "gcp", "authentication"]
-description = "Google Cloud storage implementations for Phylax authentication primitives."
+description = "Firestore authentication and identity stores for Phylax."
 
 [dependencies]
-firestore-common = { workspace = true }
+arche-firestore = { workspace = true }
 phylax-core = { workspace = true }
 
 base64 = { workspace = true }

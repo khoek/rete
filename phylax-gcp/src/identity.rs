@@ -1,5 +1,6 @@
 //! Configurable identity directories for services using Firestore. No application paths or providers are built in.
 use anyhow::Context;
+use arche_firestore::*;
 use ed25519_dalek::pkcs8::{
     DecodePrivateKey, EncodePrivateKey, EncodePublicKey,
     spki::der::pem::LineEnding as Pkcs8LineEnding,
@@ -7,7 +8,6 @@ use ed25519_dalek::pkcs8::{
 use firestore::{
     FirestoreConsistencySelector, FirestoreTransactionOps, FirestoreWritePrecondition,
 };
-use firestore_common::*;
 use getrandom::{SysRng, rand_core::UnwrapErr};
 use phylax_core::JwtConfig;
 use phylax_core::random_urlsafe_string;
