@@ -1,0 +1,21 @@
+[package]
+name = "phylax-oidc"
+version = "0.1.0"
+edition.workspace = true
+license.workspace = true
+publish.workspace = true
+repository.workspace = true
+readme = "README.md"
+categories = ["authentication", "web-programming"]
+keywords = ["openid-connect", "oidc", "oauth2", "authentication"]
+description = "Configurable OIDC provider adapter for Phylax authorization code flows."
+
+[dependencies]
+phylax-core = { workspace = true }
+
+anyhow = "1"
+async-trait = "0.1"
+openidconnect = "4"
+serde = { workspace = true }
+serde_json = { workspace = true }
+url = { workspace = true }

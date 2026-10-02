@@ -1,0 +1,30 @@
+[package]
+name = "arche-web"
+version = "0.1.0"
+edition.workspace = true
+license.workspace = true
+publish.workspace = true
+repository.workspace = true
+readme = "README.md"
+categories = ["web-programming::http-server", "asynchronous"]
+keywords = ["axum", "http", "proxy", "tokio"]
+description = "Reusable HTTP service runtime, bounded forwarding, and JSON errors."
+
+[dependencies]
+anyhow = "1"
+reqwest = { version = "0.13", default-features = false, features = ["json", "query", "rustls"] }
+serde_json = { workspace = true }
+base64 = { workspace = true }
+url = { workspace = true }
+axum = "0.8"
+serde = { workspace = true }
+thiserror = "2"
+rustls = { version = "0.23", default-features = false, features = ["aws-lc-rs"] }
+tokio = { version = "1", features = ["macros", "net", "rt-multi-thread", "time", "signal", "sync"] }
+tower-http = { version = "0.7", features = ["trace", "set-header"] }
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["fmt", "env-filter"] }
+
+[dev-dependencies]
+serde_json = { workspace = true }
+tower = { version = "0.5", features = ["util"] }

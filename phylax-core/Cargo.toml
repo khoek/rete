@@ -1,0 +1,27 @@
+[package]
+name = "phylax-core"
+version = "0.1.1"
+edition.workspace = true
+license.workspace = true
+publish.workspace = true
+repository.workspace = true
+readme = "README.md"
+categories = ["authentication", "web-programming"]
+keywords = ["oauth2", "jwt", "authentication", "axum"]
+description = "Reusable OAuth access-token, refresh-token, and Axum auth endpoint primitives."
+
+[dependencies]
+anyhow = { workspace = true }
+base64 = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+url = { workspace = true }
+
+axum = "0.8"
+async-trait = "0.1"
+hmac = "0.13"
+jsonwebtoken = { version = "11", default-features = false, features = ["use_pem", "rust_crypto"] }
+rand = "0.10"
+sha2 = "0.11"
+time = "0.3"
+tracing = "0.1"

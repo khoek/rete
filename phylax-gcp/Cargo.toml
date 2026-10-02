@@ -1,0 +1,29 @@
+[package]
+name = "phylax-gcp"
+version = "0.1.0"
+edition.workspace = true
+license.workspace = true
+publish.workspace = true
+repository.workspace = true
+readme = "README.md"
+categories = ["authentication", "database"]
+keywords = ["oauth2", "firestore", "gcp", "authentication"]
+description = "Google Cloud storage implementations for Phylax authentication primitives."
+
+[dependencies]
+firestore-common = { workspace = true }
+phylax-core = { workspace = true }
+
+base64 = { workspace = true }
+url = { workspace = true }
+anyhow = { workspace = true }
+async-trait = "0.1"
+firestore = "0.53"
+reqwest = { version = "0.13", default-features = false, features = ["blocking", "json", "rustls"] }
+serde = { workspace = true }
+serde_json = { workspace = true }
+tracing = "0.1"
+
+ed25519-dalek = { version = "3", features = ["pem", "rand_core"] }
+getrandom = "0.4"
+sha2 = "0.11"

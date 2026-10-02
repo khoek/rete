@@ -1,0 +1,21 @@
+[package]
+name = "firestore-common"
+version = "0.1.0"
+edition.workspace = true
+license.workspace = true
+publish.workspace = true
+repository.workspace = true
+readme = "README.md"
+categories = ["database"]
+keywords = ["firestore", "gcp", "database"]
+description = "Validated Firestore connections and strict typed document access."
+
+[dependencies]
+anyhow = { workspace = true }
+async-trait = "0.1"
+firestore = "0.53"
+gcloud-sdk = "0.31"
+secret-vault-value = "1"
+serde = { workspace = true }
+tokio = { version = "1", features = ["time"] }
+tracing = "0.1"
