@@ -297,6 +297,32 @@ impl ValidatedIdentityBootstrap {
 }
 
 impl IdentityStore {
+    /// Check the live session binding as well as the signed access claims.
+    pub async fn session_active(
+        &self,
+        claims: &phylax_core::AccessClaims,
+        now_unix: i64,
+    ) -> anyhow::Result<bool> {
+        let Some(sid) = &claims.sid else {
+            return Ok(false);
+        };
+        if sid.is_empty() || sid.contains('/') {
+            return Ok(false);
+        }
+        let session = get_stored_obj_at_if_exists::<crate::GrantRecord>(
+            self.db.inner(),
+            &self.parent,
+            crate::AUTH_GRANTS_COLLECTION,
+            sid,
+        )
+        .await?;
+        Ok(session.is_some_and(|session| {
+            session.subject == claims.sub
+                && session.client_id == claims.client_id
+                && !session.is_revoked_or_expired_at(now_unix)
+        }))
+    }
+
     pub fn parent(&self) -> &str {
         &self.parent
     }
@@ -409,20 +435,22 @@ impl IdentityStore {
         Ok(Some(user))
     }
 
-    /// Creates a user and binds an external subject in one Firestore transaction.
+    /// Creates a user, optionally binding an external subject in the same transaction.
     /// Existing identities cannot be reassigned by provisioning another user.
     pub async fn create_user(
         &self,
         user: &UserRecord,
-        identity: &ExternalIdentity,
+        identity: Option<&ExternalIdentity>,
     ) -> anyhow::Result<()> {
         validate_user_id(&user.id)?;
-        anyhow::ensure!(
-            identity.user_id == user.id
-                && !identity.provider.is_empty()
-                && !identity.provider_sub.is_empty(),
-            "invalid external identity"
-        );
+        if let Some(identity) = identity {
+            anyhow::ensure!(
+                identity.user_id == user.id
+                    && !identity.provider.is_empty()
+                    && !identity.provider_sub.is_empty(),
+                "invalid external identity"
+            );
+        }
         let mut tx = self.db.inner().begin_transaction().await?;
         tx.update_object_at(
             &self.parent,
@@ -433,15 +461,17 @@ impl IdentityStore {
             Some(FirestoreWritePrecondition::Exists(false)),
             vec![],
         )?;
-        tx.update_object_at(
-            &self.parent,
-            "identities",
-            external_identity_id(&identity.provider, &identity.provider_sub),
-            identity,
-            None,
-            Some(FirestoreWritePrecondition::Exists(false)),
-            vec![],
-        )?;
+        if let Some(identity) = identity {
+            tx.update_object_at(
+                &self.parent,
+                "identities",
+                external_identity_id(&identity.provider, &identity.provider_sub),
+                identity,
+                None,
+                Some(FirestoreWritePrecondition::Exists(false)),
+                vec![],
+            )?;
+        }
         tx.commit().await?;
         Ok(())
     }
