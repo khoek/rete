@@ -138,6 +138,7 @@ pub struct OAuthRefreshTokenIssueRequest<'a> {
     pub client_id: &'a str,
     pub provider_sub: &'a str,
     pub principal: &'a str,
+    pub subject: &'a Subject,
     pub now_unix: i64,
 }
 

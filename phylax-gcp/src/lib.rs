@@ -321,6 +321,7 @@ impl FirestoreAuthStore {
                     client_id: request.client_id,
                     provider_sub: &identity.provider_sub,
                     principal: &identity.principal,
+                    subject: &access_grant.subject,
                     now_unix: request.now_unix,
                 },
                 &refresh,
@@ -524,8 +525,9 @@ impl FirestoreAuthStore {
                 return Err(oauth_grant_error_from_policy(error));
             }
         };
-        let (next_record, next_session) = rotated_refresh_records(&record, &session, request)
-            .map_err(OAuthGrantError::internal)?;
+        let (next_record, next_session) =
+            rotated_refresh_records(&record, &session, request, &access_grant.subject)
+                .map_err(OAuthGrantError::internal)?;
         let refresh_expires_unix = next_record.expires_at_unix();
 
         tx.delete_by_id_at(
@@ -982,7 +984,7 @@ impl FirestoreAuthStore {
             refresh.sid(),
             &GrantRecord {
                 client_id: issue.client_id.to_string(),
-                subject: Subject::new(format!("user:{}", issue.principal))?,
+                subject: issue.subject.clone(),
                 provider_sub: Some(issue.provider_sub.to_string()),
                 principal: Some(issue.principal.to_string()),
                 created_unix: refresh.issued_unix(),
@@ -1205,7 +1207,8 @@ impl FirestoreAuthStore {
             tx.rollback().await.ok();
             return Ok(RefreshTokenValidation::Invalid);
         }
-        let (next_record, next_session) = rotated_refresh_records(&record, &session, request)?;
+        let (next_record, next_session) =
+            rotated_refresh_records(&record, &session, request, &session.subject)?;
         let refresh_expires_unix = next_record.expires_at_unix();
 
         tx.delete_by_id_at(
@@ -1845,6 +1848,7 @@ fn rotated_refresh_records(
     record: &RefreshTokenRecord,
     session: &GrantRecord,
     request: &RefreshTokenRotationRequest<'_>,
+    subject: &Subject,
 ) -> anyhow::Result<(RefreshTokenRecord, GrantRecord)> {
     if request.next_expires_unix <= request.now_unix {
         anyhow::bail!("replacement refresh token expiry must be after its issuance");
@@ -1852,6 +1856,7 @@ fn rotated_refresh_records(
     let expires_unix = request.next_expires_unix;
     let expire_at = timestamp(expires_unix, "refresh token expiry")?;
     let mut next_session = session.clone();
+    next_session.subject = subject.clone();
     next_session.expires_unix = expires_unix;
     next_session.expire_at = expire_at;
     Ok((
@@ -2302,6 +2307,7 @@ mod tests {
                 next_expires_unix: 1_800,
                 now_unix: 1_500,
             },
+            &Subject::new("user:stable-id").unwrap(),
         )
         .expect("rotation records");
 
@@ -2315,6 +2321,7 @@ mod tests {
             next_record.expire_at
         );
         assert_eq!(1_000, next_session.created_unix);
+        assert_eq!("user:stable-id", next_session.subject.as_str());
         assert_eq!(1_800, next_session.expires_unix);
         assert_eq!(
             timestamp(1_800, "expected grant expiry").unwrap(),
